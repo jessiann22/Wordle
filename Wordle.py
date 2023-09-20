@@ -10,7 +10,7 @@ import random
 from WordleDictionary import FIVE_LETTER_WORDS
 from WordleGraphics import WordleGWindow, N_COLS, N_ROWS
 from WordleGraphics import CORRECT_COLOR, PRESENT_COLOR, MISSING_COLOR
-
+total_guesses = 0
 def Wordle():
     # Startup code
     gw = WordleGWindow()
@@ -36,17 +36,28 @@ def Wordle():
                 guess_the_letter = wordCurrent[i]
 
                 if guess_the_letter == wordActual[i]:
-                    wordActual_list[i] = None
+                    #wordActual_list[i] = None
+                    #changing the color if the letter is guessed correctly
+                    wordActual_list[i] = gw.set_square_color(rowCurrent, i, CORRECT_COLOR)
+
+                elif guess_the_letter in wordActual_list:
+                    wordActual_list[i] = gw.set_square_color(rowCurrent, i, PRESENT_COLOR)
+
+                else:
+                    wordActual_list[i] = gw.set_square_color(rowCurrent, i, MISSING_COLOR)
+                 
 
             if wordCurrent == wordActual:
                 gw.show_message("Congratulations! It took you " + str(rowCurrent + 1) + " guess(es)!")
+                #statistics
+                total_guesses = rowCurrent + 1
                 gw.remove_enter_listener(enter_action)
                 gw.window.set_key_enabled(False)
 
             else:
 
                 if rowCurrent == N_ROWS - 1:
-                    gw.show_message("Sorry, try again!")
+                    gw.show_message('Sorry, you lost! The word was "' + wordActual.upper() + '".')
                     gw.remove_enter_listener(enter_action)
                     gw.window.set_key_enabled(False)
 
